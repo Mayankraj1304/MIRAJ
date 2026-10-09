@@ -30,13 +30,7 @@ function sendTokenResponse(user, res, statusCode, message) {
 }
 
 export const registerUser = async (req, res) => {
-  const { email, phoneNumber, password, role } = req.body ?? {};
-
-  if (!email || !phoneNumber || !password) {
-    return res
-      .status(400)
-      .json({ message: "Email, phone number, and password are required" });
-  }
+  const { email, phoneNumber, password, isBuyer } = req.body ?? {};
 
   try {
     const normalizedEmail = email.trim().toLowerCase();
@@ -56,7 +50,7 @@ export const registerUser = async (req, res) => {
       email: normalizedEmail,
       phoneNumber: normalizedPhoneNumber,
       password: hashedPassword,
-      ...(role && { role }),
+      role: isBuyer === "YES" ? "buyer" : "seller",
     });
 
     return sendTokenResponse(user, res, 201, "Registration successful");
@@ -68,10 +62,6 @@ export const registerUser = async (req, res) => {
 
 export const loginUser = async (req, res) => {
   const { email, password } = req.body ?? {};
-
-  if (!email || !password) {
-    return res.status(400).json({ message: "Email and password are required" });
-  }
 
   try {
     const user = await userModel.findOne({ email: email.trim().toLowerCase() });
