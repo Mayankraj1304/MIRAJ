@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useAuth } from "../hook/useAuth";
 import { useNavigate } from "react-router";
 import ContinueWithGoogle from '../components/ContinueWithGoogle';
+import { ThemeToggle } from '../../../app/ThemeContext';
 
 const Login = () => {
     const { handleLogin } = useAuth();
@@ -40,7 +41,7 @@ const Login = () => {
             />
 
             <div
-                className="min-h-screen flex flex-col lg:flex-row selection:bg-[#C9A96E]/30"
+                className="theme-page min-h-screen flex flex-col lg:flex-row selection:bg-[#C9A96E]/30"
                 style={{ backgroundColor: '#fbf9f6', fontFamily: "'Inter', sans-serif" }}
             >
                 {/* ── LEFT: Editorial Image Panel ── */}
@@ -82,9 +83,12 @@ const Login = () => {
 
                 {/* ── RIGHT: Form Panel ── */}
                 <div
-                    className="w-full lg:w-1/2 flex items-center justify-center min-h-screen px-8 sm:px-14 lg:px-20 py-16"
+                    className="relative w-full lg:w-1/2 flex items-center justify-center min-h-screen px-8 sm:px-14 lg:px-20 py-16"
                     style={{ backgroundColor: '#fbf9f6' }}
                 >
+                    <div className="absolute right-8 top-8">
+                        <ThemeToggle />
+                    </div>
                     <div className="w-full max-w-sm">
 
                         {/* Mobile brand mark */}

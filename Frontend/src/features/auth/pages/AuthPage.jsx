@@ -14,6 +14,7 @@ import {
   Globe2,
   Lock,
 } from "lucide-react";
+import { ThemeToggle } from "../../../app/ThemeContext";
 
 // Full HD Web Wallpapers (1080p & 1440p)
 const WALLPAPERS = [
@@ -65,7 +66,7 @@ export default function AuthPage() {
   };
 
   return (
-    <div className="relative min-h-screen w-full flex flex-col justify-between overflow-x-hidden text-slate-100 font-sans selection:bg-cyan-500/30 selection:text-white">
+    <div className="auth-page relative min-h-screen w-full flex flex-col justify-between overflow-x-hidden text-slate-100 font-sans selection:bg-cyan-500/30 selection:text-white">
       {/* FULL HD WEB BACKGROUND IMAGE */}
       <div
         className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat transition-all duration-1000 transform scale-105"
@@ -118,6 +119,7 @@ export default function AuthPage() {
 
         {/* Wallpaper HD Selector & Security Badge */}
         <div className="flex items-center gap-3">
+          <ThemeToggle />
           <div className="relative">
             <button
               type="button"

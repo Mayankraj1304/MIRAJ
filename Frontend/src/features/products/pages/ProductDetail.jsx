@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router';
 import { useProduct } from '../hooks/useProduct';
+import { ThemeToggle } from '../../../app/ThemeContext';
 
 const ProductDetail = () => {
     const { productId } = useParams();
@@ -25,7 +26,8 @@ const ProductDetail = () => {
 
     if (!product) {
         return (
-            <div className="min-h-screen flex items-center justify-center selection:bg-[#C9A96E]/30" style={{ backgroundColor: '#fbf9f6' }}>
+            <div className="theme-page min-h-screen flex items-center justify-center selection:bg-[#C9A96E]/30 relative" style={{ backgroundColor: '#fbf9f6' }}>
+                <div className="absolute right-8 top-8"><ThemeToggle /></div>
                 <p style={{ fontFamily: "'Inter', sans-serif", color: '#B5ADA3' }} className="text-[10px] uppercase tracking-[0.2em] font-medium animate-pulse">
                     Retrieving piece...
                 </p>
@@ -44,7 +46,7 @@ const ProductDetail = () => {
             />
 
             <div
-                className="min-h-screen selection:bg-[#C9A96E]/30 pb-24"
+                className="theme-page min-h-screen selection:bg-[#C9A96E]/30 pb-24"
                 style={{ backgroundColor: '#fbf9f6', fontFamily: "'Inter', sans-serif" }}
             >
                 {/* ── Navbar ── */}
@@ -55,13 +57,16 @@ const ProductDetail = () => {
                     >
                         Snitch.
                     </Link>
-                    <button
-                        onClick={() => navigate(-1)}
-                        className="text-[10px] uppercase tracking-[0.2em] font-medium transition-colors hover:text-[#C9A96E]"
-                        style={{ color: '#7A6E63' }}
-                    >
-                        Return to Archive
-                    </button>
+                    <div className="flex items-center gap-4">
+                        <ThemeToggle />
+                        <button
+                            onClick={() => navigate(-1)}
+                            className="text-[10px] uppercase tracking-[0.2em] font-medium transition-colors hover:text-[#C9A96E]"
+                            style={{ color: '#7A6E63' }}
+                        >
+                            Return to Archive
+                        </button>
+                    </div>
                 </nav>
 
                 <div className="max-w-7xl mx-auto px-8 lg:px-16 xl:px-24 pt-12 lg:pt-20">

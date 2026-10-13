@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { useProduct } from '../hooks/useProduct';
 import { Link } from 'react-router';
 import { useNavigate } from 'react-router';
+import { ThemeToggle } from '../../../app/ThemeContext';
 
 const Home = () => {
     const products = useSelector(state => state.product.products);
@@ -24,7 +25,7 @@ const Home = () => {
             />
 
             <div
-                className="min-h-screen selection:bg-[#C9A96E]/30"
+                className="theme-page min-h-screen selection:bg-[#C9A96E]/30"
                 style={{ backgroundColor: '#fbf9f6', fontFamily: "'Inter', sans-serif" }}
             >
                 {/* ── Navbar ── */}
@@ -49,6 +50,7 @@ const Home = () => {
                                 <Link to="/register" className="transition-colors hover:text-[#C9A96E]">Sign Up</Link>
                             </>
                         )}
+                        <ThemeToggle />
                     </div>
                 </nav>
 

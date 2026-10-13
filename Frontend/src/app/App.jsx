@@ -4,7 +4,7 @@ import { routes } from './app.routes'
 import { useSelector } from 'react-redux'
 import { useAuth } from '../features/auth/hook/useAuth'
 import { useEffect } from 'react'
-
+import { ThemeProvider } from './ThemeContext'
 
 function App() {
 
@@ -20,9 +20,9 @@ function App() {
   }, [])
 
   return (
-    <>
+    <ThemeProvider>
       <RouterProvider router={routes} />
-    </>
+    </ThemeProvider>
   )
 }
 

@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { useProduct } from '../hooks/useProduct';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router';
+import { ThemeToggle } from '../../../app/ThemeContext';
 
 const Dashboard = () => {
     const { handleGetSellerProduct } = useProduct();
@@ -21,29 +22,32 @@ const Dashboard = () => {
             />
 
             <div
-                className="min-h-screen selection:bg-[#C9A96E]/30"
+                className="theme-page min-h-screen selection:bg-[#C9A96E]/30"
                 style={{ backgroundColor: '#fbf9f6', fontFamily: "'Inter', sans-serif" }}
             >
                 <div className="max-w-7xl mx-auto px-8 lg:px-16 xl:px-24">
 
                     {/* ── Top Bar ── */}
-                    <div className="pt-10 pb-0 flex items-center gap-5">
-                        <button
-                            onClick={() => navigate(-1)}
-                            className="text-lg transition-colors duration-200 leading-none"
-                            style={{ color: '#B5ADA3' }}
-                            aria-label="Go back"
-                            onMouseEnter={e => e.currentTarget.style.color = '#C9A96E'}
-                            onMouseLeave={e => e.currentTarget.style.color = '#B5ADA3'}
-                        >
-                            ←
-                        </button>
-                        <span
-                            className="text-xs font-medium tracking-[0.32em] uppercase"
-                            style={{ fontFamily: "'Cormorant Garamond', serif", color: '#C9A96E' }}
-                        >
-                            Snitch.
-                        </span>
+                    <div className="pt-10 pb-0 flex items-center justify-between">
+                        <div className="flex items-center gap-5">
+                            <button
+                                onClick={() => navigate(-1)}
+                                className="text-lg transition-colors duration-200 leading-none"
+                                style={{ color: '#B5ADA3' }}
+                                aria-label="Go back"
+                                onMouseEnter={e => e.currentTarget.style.color = '#C9A96E'}
+                                onMouseLeave={e => e.currentTarget.style.color = '#B5ADA3'}
+                            >
+                                ←
+                            </button>
+                            <span
+                                className="text-xs font-medium tracking-[0.32em] uppercase"
+                                style={{ fontFamily: "'Cormorant Garamond', serif", color: '#C9A96E' }}
+                            >
+                                Snitch.
+                            </span>
+                        </div>
+                        <ThemeToggle />
                     </div>
 
                     {/* ── Page Header ── */}
