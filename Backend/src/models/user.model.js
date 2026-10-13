@@ -1,34 +1,39 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
+import bcrypt from "bcryptjs";
 
-const userSchema = new mongoose.Schema(
-  {
-    fullname: {
-      type: String,
-      trim: true,
-    },
-    email: {
-      type: String,
-      unique: true,
-      trim: true,
-      lowercase: true,
-    },
+const userSchema = new mongoose.Schema({
+    email: { type: String, required: true, unique: true },
+    contact: { type: String, required: false },
     password: {
-      type: String,
+        type: String,
+        required: function () {
+            return !this.googleId;
+        }
     },
-    phoneNumber: {
-      type: String,
-      trim: true,
-    },
+    fullname: { type: String, required: true },
     role: {
-      type: String,
-      default: 'buyer',
+        type: String,
+        enum: [ "buyer", "seller" ],
+        default: "buyer"
     },
-  },
-  {
-    timestamps: true, // Automatically manages createdAt and updatedAt fields
-  }
-);
+    googleId: {
+        type: String,
+    }
+})
 
-const User = mongoose.model('User', userSchema);
+userSchema.pre("save", async function () {
+    if (!this.isModified("password")) return;
 
-export default User;
+    const hash = await bcrypt.hash(this.password, 10);
+    this.password = hash;
+})
+
+
+userSchema.methods.comparePassword = async function (password) {
+    return await bcrypt.compare(password, this.password);
+}
+
+
+const userModel = mongoose.model('user', userSchema);
+
+export default userModel;

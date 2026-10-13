@@ -1,46 +1,41 @@
-import {setLoading,setError,setUser} from "../state/auth.slice";
-import { registerUser } from "../services/auth.api";
-import { loginUser } from "../services/auth.api";
-import { useDispatch, useSelector } from "react-redux";
+import { setError, setLoading, setUser } from "../state/auth.slice"
+import { register, login, getMe } from "../service/auth.api"
+import { useDispatch } from "react-redux"
+
+
 
 export const useAuth = () => {
-    const dispatch = useDispatch();
-    const { loading, error } = useSelector((state) => state.auth);
 
-    async function handleRegisterUser(email, phoneNumber, password, isBuyer) {
-        try{
-            dispatch(setError(null));
-            dispatch(setLoading(true));
-            const response = await registerUser({ email, phoneNumber, password, isBuyer });
-            dispatch(setUser(response));
-            return response;
-        }catch(error){
-            dispatch(setError(error.message));
-            throw error;
-        }finally{
-            dispatch(setLoading(false));
+    const dispatch = useDispatch()
+
+    async function handleRegister({ email, contact, password, fullname, isSeller = false }) {
+
+        const data = await register({ email, contact, password, fullname, isSeller })
+
+        dispatch(setUser(data.user))
+
+        return data.user
+    }
+
+    async function handleLogin({ email, password }) {
+
+        const data = await login({ email, password })
+        dispatch(setUser(data.user))
+        return data.user
+    }
+
+    async function handleGetMe() {
+        try {
+            dispatch(setLoading(true))
+            const data = await getMe()
+            dispatch(setUser(data.user))
+        } catch (err) {
+            console.log(err)
+        } finally {
+            dispatch(setLoading(false))
         }
     }
 
-    async function handleLoginUser(email, password) {
-        try{
-            dispatch(setError(null));
-            dispatch(setLoading(true));
-            const response = await loginUser({ email, password });
-            dispatch(setUser(response));
-            return response;
-        }catch(error){
-            dispatch(setError(error.message));
-            throw error;
-        }finally{
-            dispatch(setLoading(false));
-        }
-    }
+    return { handleRegister, handleLogin, handleGetMe }
 
-    return {
-        handleRegisterUser,
-        handleLoginUser,
-        loading,
-        error,
-    }
 }

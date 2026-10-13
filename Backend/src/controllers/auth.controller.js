@@ -1,77 +1,124 @@
-import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
 import userModel from "../models/user.model.js";
+import jwt from "jsonwebtoken"
 import { config } from "../config/config.js";
 
-const TOKEN_LIFETIME_MS = 24 * 60 * 60 * 1000;
 
-function sendTokenResponse(user, res, statusCode, message) {
-  const token = jwt.sign({ id: user._id }, config.JWT_SECRET, {
-    expiresIn: "1d",
-  });
+async function sendTokenResponse(user, res, message) {
 
-  res.cookie("token", token, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
-    maxAge: TOKEN_LIFETIME_MS,
-    path: "/",
-  });
+    const token = jwt.sign({
+        id: user._id,
+    }, config.JWT_SECRET, {
+        expiresIn: "7d"
+    })
 
-  return res.status(statusCode).json({
-    message,
-    user: {
-      id: user._id,
-      email: user.email,
-      phoneNumber: user.phoneNumber,
-      role: user.role,
-    },
-  });
+    res.cookie("token", token)
+
+    res.status(200).json({
+        message,
+        success: true,
+        user: {
+            id: user._id,
+            email: user.email,
+            contact: user.contact,
+            fullname: user.fullname,
+            role: user.role
+        }
+    })
+
 }
 
-export const registerUser = async (req, res) => {
-  const { email, phoneNumber, password, isBuyer } = req.body ?? {};
 
-  try {
-    const normalizedEmail = email.trim().toLowerCase();
-    const normalizedPhoneNumber = phoneNumber.trim();
-    const existingUser = await userModel.findOne({
-      $or: [{ email: normalizedEmail }, { phoneNumber: normalizedPhoneNumber }],
-    });
+export const register = async (req, res) => {
+    const { email, contact, password, fullname, isSeller } = req.body;
 
-    if (existingUser) {
-      return res.status(409).json({
-        message: "User with this email or phone number already exists",
-      });
+    try {
+        const existingUser = await userModel.findOne({
+            $or: [
+                { email },
+                { contact }
+            ]
+        })
+
+        if (existingUser) {
+            return res.status(400).json({ message: "User with this email or contact already exists" });
+        }
+
+        const user = await userModel.create({
+            email,
+            contact,
+            password,
+            fullname,
+            role: isSeller ? "seller" : "buyer"
+        })
+
+        await sendTokenResponse(user, res, "User registered successfully")
+
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({ message: "Server error" });
+    }
+}
+
+export const login = async (req, res) => {
+    const { email, password } = req.body;
+
+    const user = await userModel.findOne({ email });
+
+    if (!user) {
+        return res.status(400).json({ message: "Invalid email or password" });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const user = await userModel.create({
-      email: normalizedEmail,
-      phoneNumber: normalizedPhoneNumber,
-      password: hashedPassword,
-      role: isBuyer === "YES" ? "buyer" : "seller",
-    });
+    const isMatch = await user.comparePassword(password);
 
-    return sendTokenResponse(user, res, 201, "Registration successful");
-  } catch (error) {
-    console.error("Registration error:", error);
-    return res.status(500).json({ message: "Server error" });
-  }
-};
-
-export const loginUser = async (req, res) => {
-  const { email, password } = req.body ?? {};
-
-  try {
-    const user = await userModel.findOne({ email: email.trim().toLowerCase() });
-    if (!user || !(await bcrypt.compare(password, user.password))) {
-      return res.status(401).json({ message: "Invalid email or password" });
+    if (!isMatch) {
+        return res.status(400).json({ message: "Invalid email or password" });
     }
 
-    return sendTokenResponse(user, res, 200, "Login successful");
-  } catch (error) {
-    console.error("Login error:", error);
-    return res.status(500).json({ message: "Server error" });
-  }
-};
+    await sendTokenResponse(user, res, "User logged in successfully")
+}
+
+export const googleCallback = async (req, res) => {
+    const { id, displayName, emails, photos } = req.user
+    const email = emails[ 0 ].value;
+    const profilePic = photos[ 0 ].value;
+
+
+    let user = await userModel.findOne({
+        email
+    })
+
+    if (!user) {
+        user = await userModel.create({
+            email,
+            googleId: id,
+            fullname: displayName,
+        })
+    }
+
+
+    const token = jwt.sign({
+        id: user._id,
+    }, config.JWT_SECRET, {
+        expiresIn: "7d"
+    })
+
+    res.cookie("token", token)
+
+    res.redirect("http://localhost:5173/")
+}
+
+export const getMe = async (req, res) => {
+    const user = req.user;
+
+    res.status(200).json({
+        message: "User fetched successfully",
+        success: true,
+        user: {
+            id: user._id,
+            email: user.email,
+            contact: user.contact,
+            fullname: user.fullname,
+            role: user.role
+        }
+    })
+}

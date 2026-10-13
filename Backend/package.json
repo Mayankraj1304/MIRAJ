@@ -1,25 +1,31 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "description": "backend of ecommerce website",
-  "license": "ISC",
-  "author": "Mayank",
-  "type": "module",
+  "description": "",
   "main": "server.js",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "npx nodemon server.js"
+    "dev": "npx nodemon server.js",
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
   "dependencies": {
-    "bcrypt": "^6.0.0",
-    "cookie-parse": "^0.4.0",
+    "@imagekit/nodejs": "^7.5.0",
+    "axios": "^1.20.0",
+    "bcryptjs": "^3.0.3",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.6",
-    "dotenv": "^18.0.6",
+    "dotenv": "^17.4.1",
     "express": "^5.2.1",
     "express-validator": "^7.3.2",
     "jsonwebtoken": "^9.0.3",
-    "mongoose": "^9.11.1",
-    "morgan": "^1.12.1"
+    "mongoose": "^9.4.1",
+    "morgan": "^1.10.1",
+    "multer": "^2.1.1",
+    "passport": "^0.7.0",
+    "passport-google-oauth20": "^2.0.0"
   }
 }
