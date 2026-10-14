@@ -5,7 +5,7 @@ import ContinueWithGoogle from '../components/ContinueWithGoogle';
 import { ThemeToggle } from '../../../app/ThemeContext';
 
 const Register = () => {
-    const { handleRegister } = useAuth();
+    const { handleRegister, loading } = useAuth();
     const navigate = useNavigate();
 
     const [formData, setFormData] = useState({
@@ -23,14 +23,18 @@ const Register = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        await handleRegister({
-            email: formData.email,
-            contact: formData.contactNumber,
-            password: formData.password,
-            isSeller: formData.isSeller,
-            fullname: formData.fullName
-        });
-        navigate("/");
+        try {
+            await handleRegister({
+                email: formData.email,
+                contact: formData.contactNumber,
+                password: formData.password,
+                isSeller: formData.isSeller,
+                fullname: formData.fullName
+            });
+            navigate("/");
+        } catch {
+            // The shared auth banner displays the error recorded by useAuth.
+        }
     };
 
     const inputStyle = {
@@ -167,7 +171,11 @@ const Register = () => {
                                     value={formData.contactNumber}
                                     onChange={handleChange}
                                     required
-                                    placeholder="+91 98765 43210"
+                                    inputMode="numeric"
+                                    maxLength={10}
+                                    pattern="[0-9]{10}"
+                                    title="Enter a 10-digit contact number"
+                                    placeholder="9876543210"
                                     className="w-full bg-transparent outline-none py-3 text-sm transition-colors duration-300"
                                     style={inputStyle}
                                     onFocus={handleFocus}
@@ -215,6 +223,7 @@ const Register = () => {
                                     value={formData.password}
                                     onChange={handleChange}
                                     required
+                                    minLength={6}
                                     placeholder="••••••••"
                                     className="w-full bg-transparent outline-none py-3 text-sm transition-colors duration-300"
                                     style={inputStyle}
@@ -263,6 +272,7 @@ const Register = () => {
                             {/* Sign Up Button */}
                             <button
                                 type="submit"
+                                disabled={loading}
                                 className="w-full py-4 text-[11px] uppercase tracking-[0.25em] font-medium transition-all duration-300 mt-2"
                                 style={{ backgroundColor: '#1b1c1a', color: '#fbf9f6', fontFamily: "'Inter', sans-serif" }}
                                 onMouseEnter={e => {
@@ -274,7 +284,7 @@ const Register = () => {
                                     e.currentTarget.style.color = '#fbf9f6';
                                 }}
                             >
-                                Sign Up
+                                {loading ? 'Creating account...' : 'Sign Up'}
                             </button>
 
                             {/* Divider */}

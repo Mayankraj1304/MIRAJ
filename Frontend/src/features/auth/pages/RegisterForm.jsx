@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 
 export function RegisterForm({ onSwitchToLogin, onSuccess }) {
+  const [fullname, setFullname] = useState("");
   const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [password, setPassword] = useState("");
@@ -21,7 +22,7 @@ export function RegisterForm({ onSwitchToLogin, onSuccess }) {
   const [showPassword, setShowPassword] = useState(false);
   const [agreeTerms, setAgreeTerms] = useState(true);
 
-  const { handleRegisterUser, loading } = useAuth();
+  const { handleRegister, loading } = useAuth();
 
   // Dynamic password strength meter
   const getPasswordStrength = (pass) => {
@@ -56,7 +57,13 @@ export function RegisterForm({ onSwitchToLogin, onSuccess }) {
     }
 
     try {
-      const result = await handleRegisterUser(email, phoneNumber, password, isBuyer);
+      const result = await handleRegister({
+        fullname,
+        email,
+        contact: phoneNumber,
+        password,
+        isSeller: isBuyer === "NO",
+      });
       if (onSuccess) {
         onSuccess(
           result?.message
@@ -82,6 +89,25 @@ export function RegisterForm({ onSwitchToLogin, onSuccess }) {
       </div>
 
       <form className="space-y-4" onSubmit={handleSubmit}>
+        <div>
+          <label
+            htmlFor="register-fullname"
+            className="block text-xs font-semibold text-slate-300 mb-1.5 uppercase tracking-wider"
+          >
+            Full Name
+          </label>
+          <input
+            id="register-fullname"
+            type="text"
+            required
+            minLength={3}
+            autoComplete="name"
+            value={fullname}
+            onChange={(e) => setFullname(e.target.value)}
+            placeholder="Your full name"
+            className="w-full px-4 py-2.5 bg-slate-950/70 border border-white/10 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-purple-400 focus:ring-2 focus:ring-purple-400/25 hover:border-white/20 transition-all"
+          />
+        </div>
         {/* EMAIL ADDRESS */}
         <div>
           <label
@@ -124,9 +150,13 @@ export function RegisterForm({ onSwitchToLogin, onSuccess }) {
               type="tel"
               required
               autoComplete="tel"
+              inputMode="numeric"
+              maxLength={10}
+              pattern="[0-9]{10}"
+              title="Enter a 10-digit contact number"
               value={phoneNumber}
               onChange={(e) => setPhoneNumber(e.target.value)}
-              placeholder="+1 (555) 234-5678"
+              placeholder="9876543210"
               className="w-full pl-10 pr-4 py-2.5 bg-slate-950/70 border border-white/10 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-purple-400 focus:ring-2 focus:ring-purple-400/25 hover:border-white/20 transition-all"
             />
           </div>
@@ -148,6 +178,7 @@ export function RegisterForm({ onSwitchToLogin, onSuccess }) {
               id="register-password"
               type={showPassword ? "text" : "password"}
               required
+              minLength={6}
               autoComplete="new-password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}

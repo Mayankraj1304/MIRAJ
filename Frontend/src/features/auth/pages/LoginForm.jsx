@@ -8,12 +8,12 @@ export function LoginForm({ onSwitchToRegister, onSuccess }) {
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
 
-  const { handleLoginUser, loading } = useAuth();
+  const { handleLogin, loading } = useAuth();
 
   async function handleSubmit(event) {
     event.preventDefault();
     try {
-      const result = await handleLoginUser(email, password);
+      const result = await handleLogin({ email, password });
       if (onSuccess) {
         onSuccess(result?.message || "Successfully authenticated! Redirecting to your dashboard...");
       }
