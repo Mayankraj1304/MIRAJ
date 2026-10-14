@@ -1,0 +1,68 @@
+import { useState } from 'react';
+import { useNavigate } from 'react-router';
+import { useAuth } from '../../auth/hook/useAuth';
+import { useTheme } from '../../../app/ThemeContext';
+
+const UserMenu = ({ user }) => {
+    const [isOpen, setIsOpen] = useState(false);
+    const { handleLogout } = useAuth();
+    const navigate = useNavigate();
+    const { theme, toggleTheme } = useTheme();
+
+    const handleUserLogout = async () => {
+        await handleLogout();
+        setIsOpen(false);
+        navigate('/login', { replace: true });
+    };
+
+    return (
+        <div className="relative text-[10px] uppercase tracking-[0.2em] font-medium">
+            <button
+                type="button"
+                className="flex items-center gap-2 transition-colors hover:text-[#C9A96E]"
+                style={{ color: '#1b1c1a' }}
+                aria-expanded={isOpen}
+                aria-haspopup="menu"
+                onClick={() => setIsOpen(open => !open)}
+            >
+                <span>{user.fullname}</span>
+                <svg
+                    className={`w-3 h-3 transition-transform ${isOpen ? 'rotate-180' : ''}`}
+                    viewBox="0 0 12 12"
+                    fill="none"
+                    aria-hidden="true"
+                >
+                    <path d="m2.5 4.5 3.5 3 3.5-3" stroke="currentColor" strokeWidth="1.2" />
+                </svg>
+            </button>
+            {isOpen && (
+                <div
+                    className="user-menu-panel absolute right-0 top-full z-20 mt-3 min-w-44 border bg-[#fbf9f6] py-2 shadow-lg"
+                    style={{ borderColor: '#e4e2df' }}
+                    role="menu"
+                >
+                    <button
+                        type="button"
+                        className="w-full px-4 py-2 text-left text-[10px] uppercase tracking-[0.18em] transition-colors hover:bg-[#f5f3f0] hover:text-[#C9A96E]"
+                        style={{ color: '#7A6E63' }}
+                        role="menuitem"
+                        onClick={toggleTheme}
+                    >
+                        Switch to {theme === 'dark' ? 'light' : 'dark'} mode
+                    </button>
+                    <button
+                        type="button"
+                        className="w-full px-4 py-2 text-left text-[10px] uppercase tracking-[0.18em] transition-colors hover:bg-[#f5f3f0] hover:text-[#C9A96E]"
+                        style={{ color: '#7A6E63' }}
+                        role="menuitem"
+                        onClick={handleUserLogout}
+                    >
+                        Log out
+                    </button>
+                </div>
+            )}
+        </div>
+    );
+};
+
+export default UserMenu;
