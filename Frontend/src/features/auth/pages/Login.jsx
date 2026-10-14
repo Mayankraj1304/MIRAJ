@@ -5,7 +5,7 @@ import ContinueWithGoogle from '../components/ContinueWithGoogle';
 import { ThemeToggle } from '../../../app/ThemeContext';
 
 const Login = () => {
-    const { handleLogin } = useAuth();
+    const { handleLogin, loading } = useAuth();
     const navigate = useNavigate();
 
     const [ formData, setFormData ] = useState({
@@ -27,8 +27,8 @@ const Login = () => {
             } else if (user.role == "seller") {
                 navigate("/seller/dashboard");
             }
-        } catch (error) {
-            console.error("Login failed", error);
+        } catch {
+            // The shared auth banner displays the error recorded by useAuth.
         }
     };
 
@@ -190,6 +190,7 @@ const Login = () => {
                             {/* Sign In Button */}
                             <button
                                 type="submit"
+                                disabled={loading}
                                 className="w-full py-4 text-[11px] uppercase tracking-[0.25em] font-medium transition-all duration-300 mt-2"
                                 style={{
                                     backgroundColor: '#1b1c1a',
@@ -205,7 +206,7 @@ const Login = () => {
                                     e.currentTarget.style.color = '#fbf9f6';
                                 }}
                             >
-                                Sign In
+                                {loading ? 'Signing in...' : 'Sign In'}
                             </button>
 
                             {/* Divider */}
