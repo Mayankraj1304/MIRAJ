@@ -24,6 +24,8 @@ if(!process.env.IMAGEKIT_PRIVATE_KEY) {
 
 const backendUrl = process.env.RENDER_EXTERNAL_URL || `http://localhost:${process.env.PORT || 3000}`;
 const nodeEnvironment = process.env.NODE_ENV || "development";
+const frontendUrl = process.env.FRONTEND_URL
+    || (nodeEnvironment === "production" ? "https://miraj-three.vercel.app" : "http://localhost:5173");
 const googleCallbackUrl = new URL(
     process.env.GOOGLE_CALLBACK_URL || `${backendUrl}/api/auth/google/callback`
 );
@@ -38,7 +40,7 @@ export const config = {
     GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
     GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
     GOOGLE_CALLBACK_URL: googleCallbackUrl.toString().replace(/\/+$/, ""),
-    FRONTEND_URL: (process.env.FRONTEND_URL || "http://localhost:5173").replace(/\/+$/, ""),
+    FRONTEND_URL: frontendUrl.replace(/\/+$/, ""),
     NODE_ENV: nodeEnvironment,
     IMAGEKIT_PRIVATE_KEY: process.env.IMAGEKIT_PRIVATE_KEY
 }
