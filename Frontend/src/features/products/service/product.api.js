@@ -1,9 +1,9 @@
 import axios from "axios";
 
 const productApiInstance = axios.create({
-    baseURL: "/api/products",
+    baseURL: `${import.meta.env.VITE_API_URL}/api/products`,
     withCredentials: true,
-})
+});
 
 export async function createProduct(formData) {
     const response = await productApiInstance.post("/", formData)
