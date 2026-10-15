@@ -107,14 +107,9 @@ uses Render's `RENDER_EXTERNAL_URL` when available, or localhost for local
 development. The server uses the `PORT` environment variable when supplied and
 otherwise listens on port `3000`.
 
-Create `Frontend/.env` with the API origin used by the frontend:
-
-```dotenv
-VITE_API_URL=http://localhost:3000
-```
-
-`VITE_API_URL` is embedded into the frontend at build time. For a deployed
-frontend, set it to the backend's public origin (without `/api`).
+The frontend uses relative `/api` URLs. During local development, the Vite
+development-server proxy forwards them to `http://localhost:3000`; in
+production, Vercel rewrites them to the Render backend.
 
 ### 3. Start the applications
 
@@ -194,9 +189,12 @@ files under `Backend/src`. The workflow does not currently run backend tests.
 ### Deployment
 
 The frontend is configured for Vercel, including SPA route rewrites in
-`Frontend/vercel.json`. The hosting provider's Git integration is separate from
-the GitHub Actions workflow: configure Vercel and Render to deploy from the
-intended production branch (normally `main`) and to use the correct project
+`Frontend/vercel.json`. Production `/api/*` requests are rewritten through
+Vercel to the Render backend so browser API calls and authentication cookies
+use the frontend's origin. Locally, Vite proxies `/api` requests to
+`http://localhost:3000`. The hosting providers' Git integrations are separate
+from the GitHub Actions workflow: configure Vercel and Render to deploy from
+the intended production branch (normally `main`) and to use the correct project
 directories and build/start commands.
 
 Typical project settings are:
@@ -218,13 +216,11 @@ are configured to deploy.
 - Do not commit `.env` files, tokens, passwords, or private keys.
 - Set backend runtime variables in the backend hosting provider's environment
   settings.
-- Set `VITE_API_URL` in the frontend hosting provider's environment settings
-  for each relevant deployment environment.
 - For Google OAuth on Render, set `FRONTEND_URL` to the deployed Vercel site and
   `GOOGLE_CALLBACK_URL` to
-  `https://<your-render-service>.onrender.com/api/auth/google/callback`. Add
-  that exact callback URL to the Google OAuth client's authorized redirect
-  URIs.
+  `https://miraj-three.vercel.app/api/auth/google/callback`. The callback is
+  routed through Vercel to Render. Add that exact callback URL to the Google
+  OAuth client's authorized redirect URIs.
 - Keep local `.env` files out of pull requests. The repository's frontend and
   backend ignore files exclude `.env`.
 

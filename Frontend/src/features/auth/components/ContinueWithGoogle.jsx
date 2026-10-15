@@ -1,10 +1,8 @@
 import React from 'react'
 
 const ContinueWithGoogle = () => {
-    const apiUrl = (import.meta.env.VITE_API_URL || 'http://localhost:3000').replace(/\/+$/, '');
-
     return (
-        <a href={`${apiUrl}/api/auth/google`}
+        <a href="/api/auth/google"
             className="flex items-center justify-center w-full bg-transparent border border-[#E8E2D9] px-4 py-3 text-sm font-medium text-[#7A6E63] hover:border-[#C9A96E] hover:text-[#1b1c1a] transition-all duration-300 focus:outline-none focus:ring-1 focus:ring-[#C9A96E] focus:ring-offset-2 focus:ring-offset-[#fbf9f6]"
             style={{ fontFamily: "'Inter', sans-serif", letterSpacing: '0.04em' }}
         >

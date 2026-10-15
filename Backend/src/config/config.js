@@ -22,12 +22,15 @@ if(!process.env.IMAGEKIT_PRIVATE_KEY) {
     throw new Error("IMAGEKIT_PRIVATE_KEY is not defined in environment variables")
 }
 
-const backendUrl = process.env.RENDER_EXTERNAL_URL || `http://localhost:${process.env.PORT || 3000}`;
 const nodeEnvironment = process.env.NODE_ENV || "development";
 const frontendUrl = process.env.FRONTEND_URL
     || (nodeEnvironment === "production" ? "https://miraj-three.vercel.app" : "http://localhost:5173");
+const backendUrl = process.env.RENDER_EXTERNAL_URL || `http://localhost:${process.env.PORT || 3000}`;
 const googleCallbackUrl = new URL(
-    process.env.GOOGLE_CALLBACK_URL || `${backendUrl}/api/auth/google/callback`
+    process.env.GOOGLE_CALLBACK_URL
+        || (nodeEnvironment === "production"
+            ? `${frontendUrl}/api/auth/google/callback`
+            : `${backendUrl}/api/auth/google/callback`)
 );
 
 if (nodeEnvironment === "production") {
