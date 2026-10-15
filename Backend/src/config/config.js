@@ -23,15 +23,22 @@ if(!process.env.IMAGEKIT_PRIVATE_KEY) {
 }
 
 const backendUrl = process.env.RENDER_EXTERNAL_URL || `http://localhost:${process.env.PORT || 3000}`;
+const nodeEnvironment = process.env.NODE_ENV || "development";
+const googleCallbackUrl = new URL(
+    process.env.GOOGLE_CALLBACK_URL || `${backendUrl}/api/auth/google/callback`
+);
+
+if (nodeEnvironment === "production") {
+    googleCallbackUrl.protocol = "https:";
+}
 
 export const config = {
     MONGO_URI: process.env.MONGO_URI,
     JWT_SECRET: process.env.JWT_SECRET,
     GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
     GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
-    GOOGLE_CALLBACK_URL: (process.env.GOOGLE_CALLBACK_URL
-        || `${backendUrl}/api/auth/google/callback`).replace(/\/+$/, ""),
+    GOOGLE_CALLBACK_URL: googleCallbackUrl.toString().replace(/\/+$/, ""),
     FRONTEND_URL: (process.env.FRONTEND_URL || "http://localhost:5173").replace(/\/+$/, ""),
-    NODE_ENV: process.env.NODE_ENV || "development",
+    NODE_ENV: nodeEnvironment,
     IMAGEKIT_PRIVATE_KEY: process.env.IMAGEKIT_PRIVATE_KEY
 }
