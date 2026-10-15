@@ -1,4 +1,4 @@
-import { setError, setLoading, setUser } from "../state/auth.slice"
+import { setLoading, setUser } from "../state/auth.slice"
 import { register, login, getMe } from "../service/auth.api"
 import { useDispatch } from "react-redux"
 

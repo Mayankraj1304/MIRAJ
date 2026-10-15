@@ -20,9 +20,13 @@ const ProductDetail = () => {
         }
     }
 
-    useEffect(() => {
-        fetchProductDetails();
-    }, [ productId ]);
+// eslint-disable-next-line react-hooks/exhaustive-deps
+useEffect(() => {
+    const loadData = async () => {
+        await fetchProductDetails();
+    };
+    loadData();
+}, [productId]);
 
     if (!product) {
         return (
