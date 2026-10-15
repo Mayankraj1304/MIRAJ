@@ -94,12 +94,18 @@ GOOGLE_CLIENT_ID=
 GOOGLE_CLIENT_SECRET=
 IMAGEKIT_PRIVATE_KEY=
 NODE_ENV=development
+FRONTEND_URL=http://localhost:5173
+GOOGLE_CALLBACK_URL=http://localhost:3000/api/auth/google/callback
 ```
 
 The backend requires `MONGO_URI`, `JWT_SECRET`, `GOOGLE_CLIENT_ID`,
 `GOOGLE_CLIENT_SECRET`, and `IMAGEKIT_PRIVATE_KEY` at startup. `NODE_ENV` is
-optional and defaults to `development`. The server uses the `PORT` environment
-variable when supplied and otherwise listens on port `3000`.
+optional and defaults to `development`. `FRONTEND_URL` is the frontend origin
+used after Google sign-in and on OAuth failure. `GOOGLE_CALLBACK_URL` is the
+absolute OAuth callback URL registered with Google; if omitted, the backend
+uses Render's `RENDER_EXTERNAL_URL` when available, or localhost for local
+development. The server uses the `PORT` environment variable when supplied and
+otherwise listens on port `3000`.
 
 Create `Frontend/.env` with the API origin used by the frontend:
 
@@ -214,6 +220,11 @@ are configured to deploy.
   settings.
 - Set `VITE_API_URL` in the frontend hosting provider's environment settings
   for each relevant deployment environment.
+- For Google OAuth on Render, set `FRONTEND_URL` to the deployed Vercel site and
+  `GOOGLE_CALLBACK_URL` to
+  `https://<your-render-service>.onrender.com/api/auth/google/callback`. Add
+  that exact callback URL to the Google OAuth client's authorized redirect
+  URIs.
 - Keep local `.env` files out of pull requests. The repository's frontend and
   backend ignore files exclude `.env`.
 

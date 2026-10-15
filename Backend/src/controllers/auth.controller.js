@@ -82,9 +82,8 @@ export const login = async (req, res) => {
 };
 
 export const googleCallback = async (req, res) => {
-  const { id, displayName, emails, photos } = req.user;
+  const { id, displayName, emails } = req.user;
   const email = emails[0].value;
-  const profilePic = photos[0].value;
 
   let user = await userModel.findOne({
     email,
@@ -115,7 +114,7 @@ export const googleCallback = async (req, res) => {
     path: "/",
   });
 
-  res.redirect(config.FRONTEND_URL || "http://localhost:5173");
+  res.redirect(config.FRONTEND_URL);
 };
 
 export const getMe = async (req, res) => {

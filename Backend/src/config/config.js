@@ -22,13 +22,16 @@ if(!process.env.IMAGEKIT_PRIVATE_KEY) {
     throw new Error("IMAGEKIT_PRIVATE_KEY is not defined in environment variables")
 }
 
+const backendUrl = process.env.RENDER_EXTERNAL_URL || `http://localhost:${process.env.PORT || 3000}`;
 
 export const config = {
     MONGO_URI: process.env.MONGO_URI,
     JWT_SECRET: process.env.JWT_SECRET,
     GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
     GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
+    GOOGLE_CALLBACK_URL: (process.env.GOOGLE_CALLBACK_URL
+        || `${backendUrl}/api/auth/google/callback`).replace(/\/+$/, ""),
+    FRONTEND_URL: (process.env.FRONTEND_URL || "http://localhost:5173").replace(/\/+$/, ""),
     NODE_ENV: process.env.NODE_ENV || "development",
     IMAGEKIT_PRIVATE_KEY: process.env.IMAGEKIT_PRIVATE_KEY
 }
-
