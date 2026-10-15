@@ -1,18 +1,27 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { useAuth } from '../../auth/hook/useAuth';
-import { useTheme } from '../../../app/ThemeContext';
+import { ThemeMenuItem } from '../../../app/ThemeContext';
 
 const UserMenu = ({ user }) => {
     const [isOpen, setIsOpen] = useState(false);
+    const [logoutError, setLogoutError] = useState('');
+    const [isLoggingOut, setIsLoggingOut] = useState(false);
     const { handleLogout } = useAuth();
     const navigate = useNavigate();
-    const { theme, toggleTheme } = useTheme();
 
     const handleUserLogout = async () => {
-        await handleLogout();
-        setIsOpen(false);
-        navigate('/login', { replace: true });
+        setIsLoggingOut(true);
+        setLogoutError('');
+        try {
+            await handleLogout();
+            navigate('/login', { replace: true });
+        } catch (error) {
+            console.error('Logout failed', error);
+            setLogoutError('Unable to log out. Please try again.');
+        } finally {
+            setIsLoggingOut(false);
+        }
     };
 
     return (
@@ -41,23 +50,21 @@ const UserMenu = ({ user }) => {
                     style={{ borderColor: '#e4e2df' }}
                     role="menu"
                 >
+                    {logoutError && (
+                        <p className="px-4 py-2 text-[10px] normal-case tracking-normal text-red-700" role="alert">
+                            {logoutError}
+                        </p>
+                    )}
+                    <ThemeMenuItem />
                     <button
                         type="button"
                         className="w-full px-4 py-2 text-left text-[10px] uppercase tracking-[0.18em] transition-colors hover:bg-[#f5f3f0] hover:text-[#C9A96E]"
                         style={{ color: '#7A6E63' }}
                         role="menuitem"
-                        onClick={toggleTheme}
-                    >
-                        Switch to {theme === 'dark' ? 'light' : 'dark'} mode
-                    </button>
-                    <button
-                        type="button"
-                        className="w-full px-4 py-2 text-left text-[10px] uppercase tracking-[0.18em] transition-colors hover:bg-[#f5f3f0] hover:text-[#C9A96E]"
-                        style={{ color: '#7A6E63' }}
-                        role="menuitem"
+                        disabled={isLoggingOut}
                         onClick={handleUserLogout}
                     >
-                        Log out
+                        {isLoggingOut ? 'Logging out...' : 'Log out'}
                     </button>
                 </div>
             )}

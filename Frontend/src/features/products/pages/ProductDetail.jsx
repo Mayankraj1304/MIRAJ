@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router';
 import { useProduct } from '../hooks/useProduct';
 import { ThemeToggle } from '../../../app/ThemeContext';
+import { useSelector } from 'react-redux';
+import UserMenu from '../components/UserMenu';
 
 const ProductDetail = () => {
     const { productId } = useParams();
@@ -9,6 +11,7 @@ const ProductDetail = () => {
     const [ selectedImage, setSelectedImage ] = useState(0);
     const { handleGetProductById } = useProduct();
     const navigate = useNavigate();
+    const user = useSelector(state => state.auth.user);
 
     async function fetchProductDetails() {
         try {
@@ -62,7 +65,7 @@ useEffect(() => {
                         Snitch.
                     </Link>
                     <div className="flex items-center gap-4">
-                        <ThemeToggle />
+                        {user ? <UserMenu user={user} /> : <ThemeToggle />}
                         <button
                             onClick={() => navigate(-1)}
                             className="text-[10px] uppercase tracking-[0.2em] font-medium transition-colors hover:text-[#C9A96E]"

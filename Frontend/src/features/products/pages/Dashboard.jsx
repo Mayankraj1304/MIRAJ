@@ -3,10 +3,12 @@ import { useProduct } from '../hooks/useProduct';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router';
 import { ThemeToggle } from '../../../app/ThemeContext';
+import UserMenu from '../components/UserMenu';
 
 const Dashboard = () => {
     const { handleGetSellerProduct } = useProduct();
     const sellerProducts = useSelector(state => state.product.sellerProducts);
+    const user = useSelector(state => state.auth.user);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -47,7 +49,7 @@ const Dashboard = () => {
                                 Snitch.
                             </span>
                         </div>
-                        <ThemeToggle />
+                        {user ? <UserMenu user={user} /> : <ThemeToggle />}
                     </div>
 
                     {/* ── Page Header ── */}

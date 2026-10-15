@@ -49,3 +49,19 @@ export function ThemeToggle() {
         </button>
     );
 }
+
+export function ThemeMenuItem() {
+    const { theme, toggleTheme } = useContext(ThemeContext);
+
+    return (
+        <button
+            type="button"
+            className="w-full px-4 py-2 text-left text-[10px] uppercase tracking-[0.18em] transition-colors hover:bg-[#f5f3f0] hover:text-[#C9A96E]"
+            style={{ color: '#7A6E63' }}
+            role="menuitem"
+            onClick={toggleTheme}
+        >
+            Switch to {theme === 'dark' ? 'light' : 'dark'} mode
+        </button>
+    );
+}

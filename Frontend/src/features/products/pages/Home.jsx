@@ -4,6 +4,7 @@ import { useProduct } from '../hooks/useProduct';
 import { Link } from 'react-router';
 import { useNavigate } from 'react-router';
 import { ThemeToggle } from '../../../app/ThemeContext';
+import UserMenu from '../components/UserMenu';
 
 const Home = () => {
     const products = useSelector(state => state.product.products);
@@ -39,10 +40,10 @@ const Home = () => {
                     <div className="flex gap-6 items-center text-[10px] uppercase tracking-[0.2em] font-medium" style={{ color: '#7A6E63' }}>
                         {user ? (
                             <>
-                                <span style={{ color: '#1b1c1a' }}>{user.fullname}</span>
                                 {user.role === 'seller' && (
                                     <Link to="/seller/dashboard" className="transition-colors hover:text-[#C9A96E]">Seller Dashboard</Link>
                                 )}
+                                <UserMenu user={user} />
                             </>
                         ) : (
                             <>
@@ -50,7 +51,7 @@ const Home = () => {
                                 <Link to="/register" className="transition-colors hover:text-[#C9A96E]">Sign Up</Link>
                             </>
                         )}
-                        <ThemeToggle />
+                        {!user && <ThemeToggle />}
                     </div>
                 </nav>
 

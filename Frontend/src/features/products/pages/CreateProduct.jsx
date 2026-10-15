@@ -2,6 +2,8 @@ import React, { useState, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router';
 import { useProduct } from '../hooks/useProduct';
 import { ThemeToggle } from '../../../app/ThemeContext';
+import { useSelector } from 'react-redux';
+import UserMenu from '../components/UserMenu';
 
 const CURRENCIES = ['INR', 'USD', 'EUR', 'GBP'];
 const MAX_IMAGES = 7;
@@ -9,6 +11,7 @@ const MAX_IMAGES = 7;
 const CreateProduct = () => {
     const { handleCreateProduct } = useProduct();
     const navigate = useNavigate();
+    const user = useSelector(state => state.auth.user);
 
     const [formData, setFormData] = useState({
         title: '',
@@ -115,7 +118,7 @@ const CreateProduct = () => {
                                 Snitch.
                             </span>
                         </div>
-                        <ThemeToggle />
+                        {user ? <UserMenu user={user} /> : <ThemeToggle />}
                     </div>
 
                     {/* ── Page Header ── */}

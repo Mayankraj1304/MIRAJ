@@ -12,6 +12,7 @@ const Login = () => {
         email: '',
         password: ''
     });
+    const [showPassword, setShowPassword] = useState(false);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -168,23 +169,47 @@ const Login = () => {
                                         Forgot password?
                                     </a>
                                 </div>
-                                <input
-                                    id="login-password"
-                                    type="password"
-                                    name="password"
-                                    value={formData.password}
-                                    onChange={handleChange}
-                                    required
-                                    placeholder="••••••••"
-                                    className="w-full bg-transparent outline-none py-3 text-sm transition-colors duration-300"
-                                    style={{
-                                        color: '#1b1c1a',
-                                        borderBottom: '1px solid #d0c5b5',
-                                        fontFamily: "'Inter', sans-serif"
-                                    }}
-                                    onFocus={e => e.target.style.borderBottomColor = '#C9A96E'}
-                                    onBlur={e => e.target.style.borderBottomColor = '#d0c5b5'}
-                                />
+                                <div className="relative">
+                                    <input
+                                        id="login-password"
+                                        type={showPassword ? 'text' : 'password'}
+                                        name="password"
+                                        value={formData.password}
+                                        onChange={handleChange}
+                                        required
+                                        placeholder="••••••••"
+                                        className="w-full bg-transparent outline-none py-3 pr-12 text-sm transition-colors duration-300"
+                                        style={{
+                                            color: '#1b1c1a',
+                                            borderBottom: '1px solid #d0c5b5',
+                                            fontFamily: "'Inter', sans-serif"
+                                        }}
+                                        onFocus={e => e.target.style.borderBottomColor = '#C9A96E'}
+                                        onBlur={e => e.target.style.borderBottomColor = '#d0c5b5'}
+                                    />
+                                    <button
+                                        type="button"
+                                        aria-label={showPassword ? 'Hide password' : 'Show password'}
+                                        aria-pressed={showPassword}
+                                        onClick={() => setShowPassword(visible => !visible)}
+                                        className="absolute right-0 top-1/2 -translate-y-1/2 p-2"
+                                        style={{ color: '#7A6E63' }}
+                                    >
+                                        <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true">
+                                            {showPassword ? (
+                                                <>
+                                                    <path d="M3 3l18 18M10.6 10.6a2 2 0 002.8 2.8" />
+                                                    <path d="M9.9 5.2A10.8 10.8 0 0112 5c5 0 8.3 4.5 9 7-.3 1.1-1.1 2.5-2.4 3.7M6.2 6.2C3.8 7.7 2.4 10 2 12c.7 2.5 4 7 10 7 1.2 0 2.3-.2 3.3-.6" />
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <path d="M2 12s3.3-7 10-7 10 7 10 7-3.3 7-10 7-10-7-10-7z" />
+                                                    <circle cx="12" cy="12" r="3" />
+                                                </>
+                                            )}
+                                        </svg>
+                                    </button>
+                                </div>
                             </div>
 
                             {/* Sign In Button */}
