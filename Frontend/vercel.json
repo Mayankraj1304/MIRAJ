@@ -1,6 +1,10 @@
 {
   "rewrites": [
     {
+      "source": "/api/products/",
+      "destination": "https://miraj-3eil.onrender.com/api/products"
+    },
+    {
       "source": "/api/:path*",
       "destination": "https://miraj-3eil.onrender.com/api/:path*"
     },

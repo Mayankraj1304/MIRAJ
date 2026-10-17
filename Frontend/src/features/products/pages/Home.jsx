@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useProduct } from '../hooks/useProduct';
 import { Link } from 'react-router';
@@ -10,12 +10,27 @@ const Home = () => {
     const products = useSelector(state => state.product.products);
     const user = useSelector(state => state.auth.user);
     const { handleGetAllProducts } = useProduct();
+    const [isLoadingProducts, setIsLoadingProducts] = useState(true);
+    const [productsError, setProductsError] = useState('');
 
     const navigate = useNavigate();
 
+    const loadProducts = useCallback(async () => {
+        setIsLoadingProducts(true);
+        setProductsError('');
+        try {
+            await handleGetAllProducts();
+        } catch (error) {
+            console.error('Failed to load products', error);
+            setProductsError(error.response?.data?.message || 'Could not load products. Please try again.');
+        } finally {
+            setIsLoadingProducts(false);
+        }
+    }, [handleGetAllProducts]);
+
     useEffect(() => {
-        handleGetAllProducts();
-    }, []);
+        loadProducts();
+    }, [loadProducts]);
 
     return (
         <>
@@ -73,7 +88,23 @@ const Home = () => {
                     </div>
 
                     {/* ── Product Grid ── */}
-                    {products && products.length > 0 ? (
+                    {isLoadingProducts ? (
+                        <div className="py-24 text-center" role="status" style={{ color: '#7A6E63' }}>
+                            Loading the collection...
+                        </div>
+                    ) : productsError ? (
+                        <div className="py-24 text-center flex flex-col items-center gap-4" role="alert">
+                            <p className="text-sm" style={{ color: '#9f2d2d' }}>{productsError}</p>
+                            <button
+                                type="button"
+                                onClick={loadProducts}
+                                className="border px-5 py-3 text-[10px] uppercase tracking-[0.2em] transition-colors hover:text-[#C9A96E]"
+                                style={{ borderColor: '#e4e2df', color: '#7A6E63' }}
+                            >
+                                Try again
+                            </button>
+                        </div>
+                    ) : products && products.length > 0 ? (
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-8 gap-y-16 pb-32">
                             {products.map(product => {
                                 const imageUrl = product.images && product.images.length > 0

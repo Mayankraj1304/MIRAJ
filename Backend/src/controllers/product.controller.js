@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import productModel from "../models/product.model.js";
 import { uploadFile } from "../services/storage.service.js";
 
@@ -59,6 +60,13 @@ export async function getAllProducts(req, res) {
 
 export async function getProductDetails(req, res) {
     const { id } = req.params;
+
+    if (!mongoose.isValidObjectId(id)) {
+        return res.status(400).json({
+            message: "Invalid product ID",
+            success: false
+        })
+    }
 
     const product = await productModel.findById(id)
 

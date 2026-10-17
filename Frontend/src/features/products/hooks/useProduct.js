@@ -20,11 +20,10 @@ export const useProduct = () => {
         return data.products
     }, [dispatch])
 
-    async function handleGetAllProducts() {
-
+    const handleGetAllProducts = useCallback(async () => {
         const data = await getAllProducts()
         dispatch(setProducts(data.products))
-    }
+    }, [dispatch])
 
     async function handleGetProductById(productId) {
         const data = await getProductById(productId)
